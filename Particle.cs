@@ -22,7 +22,6 @@ public class Particle : MonoBehaviour
     private void Update()
     {
         gameObject.transform.position = player.transform.position;
-
     }
     public void tran()
     {

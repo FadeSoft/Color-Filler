@@ -25,7 +25,7 @@ public class Movement : MonoBehaviour
     public Color[] bodyColor;
 
     [Header("Script's")]
-    public Fallow fallowScript;
+    public Follow fallowScript;
     public Particle particleScript;
     public Touchs touchsScript;
 
@@ -37,12 +37,16 @@ public class Movement : MonoBehaviour
     public int successRate = 0;   
     public Rigidbody rigid;
     public GameObject twoSidedArrow;
-    bool startAction;
+    public bool startAction;
+    public Camera cam;
+    public Transform cams;
 
     void Start()
     {
-        //Application.targetFrameRate = 60;
-        //FPS'e limit koyma (Ekran kartýmýn Mhz'si yüksek olmasýn diye)
+        StartCoroutine(ColorsShow());
+
+        Application.targetFrameRate = 60;
+        //FPS'e limit koyma (Ekran kartýmýn Mhz'si yüksek olmasýn diye) Ayný zamanda telefon optimizasyonu ve batarya ömrü için ideal.
         rigid = GetComponent<Rigidbody>();
         //Rigidbody component'ini buluyoruz
         //Time.timeScale = 0;
@@ -52,21 +56,23 @@ public class Movement : MonoBehaviour
         charecterMat.SetFloat("_Metallic", 0);
         //Karakterin bölmelerindeki materyallere bazý iþlemler gerçekleþtiriyoruz
         touchsScript.enabled = false;
-        StartCoroutine(ColorsShow());
         bodyInt = 0;
-    }
-    void Update()
+        twoSidedArrow.SetActive(true);
+        startAction = false;
+
+}
+void Update()
     {
         if (Input.touchCount > 0)
         {
             startAction = true;
-            pnlStart.SetActive(false);
+            twoSidedArrow.SetActive(false);
             touchsScript.enabled = true;
         }
 
         if (startAction == true)
         {
-            transform.Translate(Vector3.forward * 6 * Time.deltaTime);
+            transform.Translate(Vector3.forward * 6* Time.deltaTime);
 
             if (Input.GetKey("a"))
             {
@@ -84,7 +90,6 @@ public class Movement : MonoBehaviour
             //Karakterin maximum x poziyonlarýný belirliyoruz. Zeminin sýnýrýndan çýkamasýn diye.
 
             player.SetFloat("go", 0.5f);
-            twoSidedArrow.SetActive(false);
         }
         //Karakterin hareket sistemi(Bilgisayar kontrolleri)
     }
@@ -104,6 +109,8 @@ public class Movement : MonoBehaviour
     {
         if (other.gameObject.tag == "end")
         {
+            cam.transform.SetParent(cams);
+
             StartCoroutine(EndTriggerNumerator());
 
             press();
@@ -135,6 +142,7 @@ public class Movement : MonoBehaviour
                 bonusAnim2.SetTrigger("false");
                 y++;
             }
+            //Burada özetle topladýðý renklerin baþta verilen kurala göre toplanmasý durumu hesaplanýyor.
         }
         /*if (other.gameObject.tag == "obstacle")
         {
@@ -150,11 +158,12 @@ public class Movement : MonoBehaviour
     public void SetCamAnim()
     {
         animator.SetTrigger("cam");
+        //Bitiþ çizgisine gelince kamera animasyonunu çalýþtýrýyoruz.
     }
     public void StartButton()
     {
         Time.timeScale = 1;
-        pnlStart.SetActive(false);
+        //pnlStart.SetActive(false);
         touchsScript.enabled = true;
         twoSidedArrow.SetActive(true);
     }
@@ -165,9 +174,11 @@ public class Movement : MonoBehaviour
     }
     public IEnumerator ColorsShow()
     {
-        yield return new WaitForSeconds(4f);
-        pnlStart.SetActive(false);
+        yield return new WaitForSeconds(3f);
+        //pnlStart.SetActive(false);
         touchsScript.enabled = true;
         startAction = true;
+        twoSidedArrow.SetActive(false);
+
     }
 }
