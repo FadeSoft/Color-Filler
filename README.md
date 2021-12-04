@@ -1,5 +1,6 @@
 # Color-Filler
 Website: http://www.fadesoftware.com/
+Blog: http://www.blog.fadesoftware.com/
 <br>
 Video Link: https://www.youtube.com/watch?v=nDm1Ng-tKYk
 <br>
